@@ -20,6 +20,7 @@ cleanfolder=${masterfolder}/clean
 mapfolder=${masterfolder}/map
 countfolder=${masterfolder}/count
 readsfolder=${masterfolder}/fastq
+echo $readsfolder
 array_configure_file=file.list
 sampleFile=`head -n $SLURM_ARRAY_TASK_ID ${array_configure_file} | tail -n1`
 trimmo_path=/apps/eb/Trimmomatic/0.39-Java-11
@@ -30,37 +31,37 @@ genomefolder=${masterfolder}
 ### This is the clean and trim section ###
 cd ${cleanfolder}
 ml Trimmomatic
-java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -threads  $SLURM_NTASKS_PER_NODE -phred33 \
-${readsfolder}/${sampleFile}.R1.fq.gz ${readsfolder}/${sampleFile}.R2.fq.gz \
-${sampleFile}_trimP_1.fq.gz ${sampleFile}_trimS_1.fq.gz  ${sampleFile}_trimP_2.fq.gz ${sampleFile}_trimS_2.fq.gz \
-ILLUMINACLIP:${trimmo_path}/adapters/TruSeq3-PE.fa:2:30:10 LEADING:5 TRAILING:5  SLIDINGWINDOW:4:15 MINLEN:36 TOPHRED33 &>${sampleFile}_trim.log
+java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -threads $SLURM_NTASKS_PER_NODE -phred33 \
+${readsfolder}/${sampleFile}.R1.fastq ${readsfolder}/${sampleFile}.R2.fastq \
+${sampleFile}_trimP_1.fq.gz ${sampleFile}_trimS_1.fq.gz ${sampleFile}_trimP_2.fq.gz ${sampleFile}_trimS_2.fq.gz \
+ILLUMINACLIP:${trimmo_path}/adapters/TruSeq3-PE.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 TOPHRED33 &>${sampleFile}_trim.log
 module load STAR
 STAR --runThreadN $SLURM_NTASKS_PER_NODE --genomeDir ${rRNA_ref_path} \
 --readFilesIn ${sampleFile}_trimP_1.fq.gz ${sampleFile}_trimP_2.fq.gz \
---readFilesCommand gunzip -c --outReadsUnmapped Fastx  \
+--readFilesCommand gunzip -c --outReadsUnmapped Fastx \
 --outFileNamePrefix ${sampleFile}_STAR_ \
   --outFilterMismatchNmax 999 \
-  --outFilterMismatchNoverLmax   0.4  \
-  --outFilterScoreMinOverLread   0.4  \
-  --outFilterMatchNminOverLread  0.4  \
+  --outFilterMismatchNoverLmax 0.4 \
+  --outFilterScoreMinOverLread 0.4 \
+  --outFilterMatchNminOverLread 0.4 \
 --alignMatesGapMax 20 --alignIntronMax 20
 STAR --runThreadN $SLURM_NTASKS_PER_NODE --genomeDir ${rRNA_ref_path} \
 --readFilesIn ${sampleFile}_trimS_1.fq.gz \
---readFilesCommand gunzip -c --outReadsUnmapped Fastx  \
+--readFilesCommand gunzip -c --outReadsUnmapped Fastx \
 --outFileNamePrefix ${sampleFile}_STAR_S1_ \
   --outFilterMismatchNmax 999 \
-  --outFilterMismatchNoverLmax   0.4  \
-  --outFilterScoreMinOverLread   0.4  \
-  --outFilterMatchNminOverLread  0.4  \
+  --outFilterMismatchNoverLmax 0.4 \
+  --outFilterScoreMinOverLread 0.4 \
+  --outFilterMatchNminOverLread 0.4 \
 --alignMatesGapMax 20 --alignIntronMax 20
 STAR --runThreadN $SLURM_NTASKS_PER_NODE --genomeDir ${rRNA_ref_path} \
 --readFilesIn ${sampleFile}_trimS_2.fq.gz \
---readFilesCommand gunzip -c --outReadsUnmapped Fastx  \
+--readFilesCommand gunzip -c --outReadsUnmapped Fastx \
 --outFileNamePrefix ${sampleFile}_STAR_S2_ \
   --outFilterMismatchNmax 999 \
-  --outFilterMismatchNoverLmax   0.4  \
-  --outFilterScoreMinOverLread   0.4  \
-  --outFilterMatchNminOverLread  0.4  \
+  --outFilterMismatchNoverLmax 0.4 \
+  --outFilterScoreMinOverLread 0.4 \
+  --outFilterMatchNminOverLread 0.4 \
 --alignMatesGapMax 20 --alignIntronMax 20
 printf "Trimming : " >>${sampleFile}_Final.log.txt
 grep "^Input Read"  ${sampleFile}_trim.log>>${sampleFile}_Final.log.txt
@@ -139,7 +140,7 @@ STAR \
 ### STAR mapping time
 STAR --runThreadN $SLURM_NTASKS_PER_NODE \
 --genomeDir ${genomefolder} --readFilesIn \
-${cleanfolder}/${sampleFile}_clean_1.fq.gz  ${cleanfolder}/${sampleFile}_clean_2.fq.gz --readFilesCommand gunzip -c \
+${cleanfolder}/${sampleFile}_clean_1.fq.gz ${cleanfolder}/${sampleFile}_clean_2.fq.gz --readFilesCommand gunzip -c \
 --outSAMtype BAM SortedByCoordinate \
 --outFileNamePrefix ${sampleFile}_ \
 --alignMatesGapMax 20000 \
@@ -151,13 +152,13 @@ cd ${countfolder}
 ml Subread
 featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \
 -a ${genomefolder}/gene.gtf \
--o ${sampleFile}_counts.txt  ${mapfolder}/${sampleFile}_Aligned.sortedByCoord.out.bam
+-o ${sampleFile}_counts.txt ${mapfolder}/${sampleFile}_Aligned.sortedByCoord.out.bam
 
 
 ## get trim log
-python ~/script/get_trim_sum.py  ${masterfolder}/clean/
+python ~/script/get_trim_sum.py ${masterfolder}/clean/
 ##Please notice you need to get the get_trim_sum.py from NGSclean github
 ## Get map log
-grep "" ${masterfolder}/map/*Log.final.out >  ${masterfolder}/all_mapping_logs.txt
+grep "" ${masterfolder}/map/*Log.final.out > ${masterfolder}/all_mapping_logs.txt
 
 date

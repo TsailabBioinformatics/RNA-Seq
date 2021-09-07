@@ -70,3 +70,5 @@ sbatch main_script.sh
 5. automatic adjust the number of array requested
 
 6. get rid of the unnecessary zipping and intermediate files removing commands
+
+7. make the script be able to taka all kind of input fastq files (.fq.gz, .fastq.gz, .fq, .fastq......)
