@@ -9,7 +9,7 @@
 #SBATCH --mail-user=your_email@uga.edu
 #SBATCH --mail-type=BEGIN,END,FAIL
 date
-###modified for job array submission by Ran###
+
 ### File path and environment setup ###
 masterfolder=$SLURM_SUBMIT_DIR
 cd ${masterfolder}
@@ -124,6 +124,19 @@ gzip -f ${sampleFile}_clean_2.fq
 ### Mapping with STAR ###
 cd ${mapfolder}
 ml STAR
+
+### prepare the index
+STAR \
+--runThreadN 8 \
+--runMode genomeGenerate \
+--genomeSAindexNbases 13 \
+--genomeDir ${masterfolder} \
+--genomeFastaFiles ${masterfolder}/genome.fa \
+--sjdbGTFfile ${masterfolder}/gene.gtf
+
+
+
+### STAR mapping time
 STAR --runThreadN $SLURM_NTASKS_PER_NODE \
 --genomeDir ${genomefolder} --readFilesIn \
 ${cleanfolder}/${sampleFile}_clean_1.fq.gz  ${cleanfolder}/${sampleFile}_clean_2.fq.gz --readFilesCommand gunzip -c \
