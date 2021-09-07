@@ -4,7 +4,7 @@ Tsai lab RNA-Seq script
 
 ## demo using Eucalyptus data: instructions on sapelo2
 
-we are gonna use interaction mode to process some data, then submit the main script to the cluster.
+we are gonna use interaction mode to process some data, then submit the main script to the cluster. all the cmds are in the `demo.sh`. execute the `demo.sh` after the first step.
 
 ```bash
 qlogin
