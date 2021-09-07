@@ -2,24 +2,23 @@
 
 Tsai lab RNA-Seq script
 
-## demo instructions on sapelo2
+## demo using Eucalyptus data: instructions on sapelo2
 
 we are gonna use interaction mode to process some data, then submit the main script to the cluster.
 
-```
+```bash
 qlogin
 ```
 
 1. clone this repo
 
-```
-git clone https://github.com/TsailabBioinformatics/RNA-Seq.git
-cp RNA-Seq/* .
+```bash
+git clone https://github.com/TsailabBioinformatics/RNA-Seq.git;cp RNA-Seq/* .
 ```
 
 2. copy the genome fasta and annotatino gff3 file to the data folder
 
-```
+```bash
 cp /work/cjtlab/Database/Egrandis/v2.0/annotation/Egrandis_297_v2.0.gene_exons.gff3 .
 cp /work/cjtlab/Database/Egrandis/v2.0/assembly/Egrandis_297_v2.0.fa ./genome.fa
 
@@ -27,14 +26,14 @@ cp /work/cjtlab/Database/Egrandis/v2.0/assembly/Egrandis_297_v2.0.fa ./genome.fa
 
 3. transfer the gff3 to `genome.gtf` using interactive mode
 
-```
+```bash
 module load gffread
-gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o genome.gtf 
+gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
 ```
 
 4. copy the fastq file to the data folder
 
-```
+```bash
 cp /work/cjtlab/testing_data/eugra.tar.gz .
 tar xvfz eugra.tar.gz
 ```
@@ -43,7 +42,7 @@ tar xvfz eugra.tar.gz
 
 6. submit the job
 
-```
+```bash
 sbatch main_script.sh
 ```
 
@@ -55,8 +54,7 @@ sbatch main_script.sh
 
 3. copy your own genome fasta and genome.gtf to the data folder
 
-4. change the array number: `#SBATCH --array=1-4` to the number of the number of the samples
-
+4. change the array number: `#SBATCH --array=1-n`, `n` = number of lines in `file.list`
 
 # TODO (WIP)
 
