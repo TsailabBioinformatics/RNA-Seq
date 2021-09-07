@@ -26,7 +26,7 @@ trimmo_path=/apps/eb/Trimmomatic/0.39-Java-11
 rRNA_ref_path=/work/cjtlab/Database/rRNA_ref
 
 
-genomefolder=$SLURM_SUBMIT_DIR
+genomefolder=${masterfolder}
 ### This is the clean and trim section ###
 cd ${cleanfolder}
 ml Trimmomatic
@@ -123,7 +123,7 @@ gzip -f ${sampleFile}_clean_2.fq
 
 ### Mapping with STAR ###
 cd ${mapfolder}
-#ml STAR
+ml STAR
 STAR --runThreadN $SLURM_NTASKS_PER_NODE \
 --genomeDir ${genomefolder} --readFilesIn \
 ${cleanfolder}/${sampleFile}_clean_1.fq.gz  ${cleanfolder}/${sampleFile}_clean_2.fq.gz --readFilesCommand gunzip -c \
