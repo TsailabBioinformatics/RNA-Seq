@@ -36,6 +36,7 @@ gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf
 ```bash
 cp /work/cjtlab/testing_data/eugra.tar.gz .
 tar xvfz eugra.tar.gz
+cp -r ./eugra/* .
 ```
 
 5. change the email address in the `main_script.sh`

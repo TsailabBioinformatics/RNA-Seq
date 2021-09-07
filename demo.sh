@@ -5,5 +5,4 @@ module load gffread
 gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
 cp /work/cjtlab/testing_data/eugra.tar.gz .
 tar xvfz eugra.tar.gz
-cp /work/cjtlab/testing_data/eugra.tar.gz .
-tar xvfz eugra.tar.gz
+cp -r ./eugra/* .
