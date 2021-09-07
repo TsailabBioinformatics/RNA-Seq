@@ -3,7 +3,7 @@
 #SBATCH --partition batch
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=12
-#SBATCH --array=1-4
+#SBATCH --array=1-2
 #SBATCH --time=8:00:00
 #SBATCH --mem=30gb
 #SBATCH --mail-user=your_email@uga.edu

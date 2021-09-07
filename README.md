@@ -49,6 +49,7 @@ sbatch main_script.sh
 
 3. copy your own genome fasta and genome.gtf to the data folder
 
+4. change the array number: `#SBATCH --array=1-4` to the number of the number of the samples
 
 
 # TODO (WIP)
@@ -61,4 +62,4 @@ sbatch main_script.sh
 
 4. package stuff into container
 
-5. 
+5. automatic adjust the number of array requested
