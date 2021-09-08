@@ -1,4 +1,4 @@
-# RNA-Seq
+# RNA-Seq analysis on sapelo2 at UGA
 
 Tsai lab RNA-Seq script
 
@@ -72,13 +72,13 @@ sbatch array_mapping_script.sh
 
 1. change the file.list (see instruciton from [Ran's note](https://www.evernote.com/shard/s202/client/snv?noteGuid=070f6281-ef94-47c1-a4df-3dbb2083693c&noteKey=2e87d16e54db6d4b&sn=https%3A%2F%2Fwww.evernote.com%2Fshard%2Fs202%2Fsh%2F070f6281-ef94-47c1-a4df-3dbb2083693c%2F2e87d16e54db6d4b&title=RNAseq%2Bpipeline%2B%2528SLURM%2Bsystem%2B2020%2529))
 
-2. copy your own fastq file to the data folder, check the file format, it should be `*.R{1,2}.fastq`
+2. copy your own fastq file to the `./fastq` folder, check the file format, it should be `*.R{1,2}.fastq`
 
-3. copy your own genome fasta and genome.gtf to the data folder
+3. copy your own `genome.fasta` and `gene.gtf` to the data folder
 
-4. change the array number: `#SBATCH --array=1-n`, `n` = number of lines in `file.list`
+4. In `array_mapping_script.sh` change the array number: `#SBATCH --array=1-n`, `n` = number of lines in `file.list`
 
-## TODO
+## TODO (WIP)
 
 1. scale up for different species
 
@@ -92,8 +92,6 @@ sbatch array_mapping_script.sh
 
 6. get rid of the unnecessary zipping and intermediate files removing commands
 
-7. make the script able to taka all kind of input fastq files (.fq.gz, .fastq.gz, .fq, .fastq......)
+7. input autodetection: auto detect the paired reads (allow wildcard usage in input file name) and take all kind of input fastq files (.fq.gz, .fastq.gz, .fq, .fastq......)
 
-8. there is always a job dangling in the cluster, how to kill it?
-
-9. investigate the effect of rRNA mapping
+8. investigate the effect of rRNA mapping
