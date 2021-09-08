@@ -34,6 +34,7 @@ gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf
 4. prepare the index for the genome with STAR
 
 ```bash
+ml STAR
 STAR \
 --runThreadN 8 \
 --runMode genomeGenerate \
