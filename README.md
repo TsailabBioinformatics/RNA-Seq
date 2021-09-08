@@ -4,7 +4,7 @@ Tsai lab RNA-Seq script
 
 ## demo using Eucalyptus data: instructions on sapelo2
 
-we are gonna use interaction mode to process some data, then submit the main script to the cluster. all the cmds are in the `demo.sh`. execute the `demo.sh` after the first step.
+we are gonna use interaction mode to process some data, then submit the main script to the cluster. execute the `demo.sh` after the first step.
 
 ```bash
 qlogin
@@ -31,7 +31,19 @@ module load gffread
 gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
 ```
 
-4. copy the fastq file to the data folder
+4. prepare the index for the genome with STAR
+
+```bash
+STAR \
+--runThreadN 8 \
+--runMode genomeGenerate \
+--genomeSAindexNbases 13 \
+--genomeDir . \
+--genomeFastaFiles genome.fa \
+--sjdbGTFfile gene.gtf
+```
+
+5. copy the fastq file to the data folder
 
 ```bash
 cp /work/cjtlab/testing_data/eugra.tar.gz .
@@ -39,9 +51,9 @@ tar xvfz eugra.tar.gz
 cp -r ./eugra/* .
 ```
 
-5. change the email address in the `main_script.sh`
+6. change the email address in the `main_script.sh`
 
-6. submit the job
+7. submit the job
 
 ```bash
 sbatch main_script.sh
@@ -51,13 +63,13 @@ sbatch main_script.sh
 
 1. change the file.list (see instruciton from [Ran's note](https://www.evernote.com/shard/s202/client/snv?noteGuid=070f6281-ef94-47c1-a4df-3dbb2083693c&noteKey=2e87d16e54db6d4b&sn=https%3A%2F%2Fwww.evernote.com%2Fshard%2Fs202%2Fsh%2F070f6281-ef94-47c1-a4df-3dbb2083693c%2F2e87d16e54db6d4b&title=RNAseq%2Bpipeline%2B%2528SLURM%2Bsystem%2B2020%2529))
 
-2. copy your own fastq file to the data folder
+2. copy your own fastq file to the data folder, check the file format, it should be `*.R{1,2}.fastq`
 
 3. copy your own genome fasta and genome.gtf to the data folder
 
 4. change the array number: `#SBATCH --array=1-n`, `n` = number of lines in `file.list`
 
-# TODO (WIP)
+# TODO
 
 1. scale up for different species
 
@@ -71,4 +83,8 @@ sbatch main_script.sh
 
 6. get rid of the unnecessary zipping and intermediate files removing commands
 
-7. make the script be able to taka all kind of input fastq files (.fq.gz, .fastq.gz, .fq, .fastq......)
+7. make the script able to taka all kind of input fastq files (.fq.gz, .fastq.gz, .fq, .fastq......)
+
+8. there is always a job dangling in the cluster, how to kill it?
+
+9. investigate the effect of rRNA mapping 
