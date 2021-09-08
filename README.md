@@ -16,45 +16,52 @@ qlogin
 git clone https://github.com/TsailabBioinformatics/RNA-Seq.git;cp RNA-Seq/* .
 ```
 
-2. copy the genome fasta and annotatino gff3 file to the data folder
+2. change the email address to yours for notification at the header in the `main_script.sh` and `prep_script.sh`
+
+3. submit the `prep_script.sh` to the cluster
 
 ```bash
-cp /work/cjtlab/Database/Egrandis/v2.0/annotation/Egrandis_297_v2.0.gene_exons.gff3 .
-cp /work/cjtlab/Database/Egrandis/v2.0/assembly/Egrandis_297_v2.0.fa ./genome.fa
-
+sbatch main_script.sh
 ```
+    explanation of the prep_script.sh:
 
-3. transfer the gff3 to `genome.gtf` using interactive mode
+    1. copy the genome fasta and annotatino gff3 file to the data folder
 
-```bash
-module load gffread
-gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
-```
+    ```bash
+    cp /work/cjtlab/Database/Egrandis/v2.0/annotation/Egrandis_297_v2.0.gene_exons.gff3 .
+    cp /work/cjtlab/Database/Egrandis/v2.0/assembly/Egrandis_297_v2.0.fa ./genome.fa
 
-4. prepare the index for the genome with STAR
+    ```
 
-```bash
-ml STAR
-STAR \
---runThreadN 8 \
---runMode genomeGenerate \
---genomeSAindexNbases 13 \
---genomeDir . \
---genomeFastaFiles genome.fa \
---sjdbGTFfile gene.gtf
-```
+    2. transfer the gff3 to `genome.gtf` using interactive mode
 
-5. copy the fastq file to the data folder
+    ```bash
+    module load gffread
+    gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
+    ```
 
-```bash
-cp /work/cjtlab/testing_data/eugra.tar.gz .
-tar xvfz eugra.tar.gz
-cp -r ./eugra/* .
-```
+    3. prepare the index for the genome with STAR
 
-6. change the email address in the `main_script.sh`
+    ```bash
+    ml STAR
+    STAR \
+    --runThreadN 8 \
+    --runMode genomeGenerate \
+    --genomeSAindexNbases 13 \
+    --genomeDir . \
+    --genomeFastaFiles genome.fa \
+    --sjdbGTFfile gene.gtf
+    ```
 
-7. submit the job
+    4. copy the fastq file to the data folder
+
+    ```bash
+    cp /work/cjtlab/testing_data/eugra.tar.gz .
+    tar xvfz eugra.tar.gz
+    cp -r ./eugra/* .
+    ```
+
+4. submit the `main_script.sh` to the cluster
 
 ```bash
 sbatch main_script.sh

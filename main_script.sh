@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J RNASeq
+#SBATCH -J RNASeqDemoMain
 #SBATCH --partition batch
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=12
