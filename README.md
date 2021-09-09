@@ -35,6 +35,8 @@ module load gffread
 gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
 ```
 
+<!-- hays: i think at this point, we could possibly reorganize our directory structure -->
+
 3. prepare the index for the genome with STAR, this step require larger memory, 17.66 GB for Egrandis in this demo, so it can not be done in interactive mode
 
 ```bash
