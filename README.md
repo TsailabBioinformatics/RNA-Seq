@@ -48,6 +48,8 @@ STAR \
 --sjdbGTFfile gene.gtf
 ```
 
+<!-- hays: here my program was killed. we could possibly offer debugging support -->
+
 4. copy the fastq file to the data folder
 
 ```bash
