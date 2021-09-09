@@ -4,12 +4,6 @@ Tsai lab RNA-Seq script
 
 ## demo using Eucalyptus data: instructions on sapelo2
 
-we are gonna use interaction mode to process some data, then submit the main script to the cluster. execute the `demo.sh` after the first step.
-
-```bash
-qlogin
-```
-
 1. clone this repo
 
 ```bash
@@ -26,7 +20,7 @@ sbatch demo.sh
 
 ### explanation of the demo.sh:
 
-1. copy the genome fasta and annotatino gff3 file to the data folder
+1. copy the genome fasta and annotatino gff3 file to the current folder
 
 ```bash
 cp /work/cjtlab/Database/Egrandis/v2.0/annotation/Egrandis_297_v2.0.gene_exons.gff3 .
@@ -34,14 +28,14 @@ cp /work/cjtlab/Database/Egrandis/v2.0/assembly/Egrandis_297_v2.0.fa ./genome.fa
 
 ```
 
-2. transfer the gff3 to `genome.gtf` using interactive mode
+2. transfer the gff3 to `genome.gtf`, when processing your own data, this step can be done using interactive mode after `qlogin`
 
 ```bash
 module load gffread
 gffread Egrandis_297_v2.0.gene_exons.gff3 -T -o gene.gtf 
 ```
 
-3. prepare the index for the genome with STAR
+3. prepare the index for the genome with STAR, this step require larger memory, 17.66 GB for Egrandis in this demo, so it can not be done in interactive mode
 
 ```bash
 ml STAR
@@ -68,7 +62,7 @@ cp -r ./eugra/* .
 sbatch array_mapping_script.sh
 ```
 
-## make it work for your own data (WIP)
+## make it work for your own data (WIP, haven't tested yet)
 
 1. change the file.list (see instruciton from [Ran's note](https://www.evernote.com/shard/s202/client/snv?noteGuid=070f6281-ef94-47c1-a4df-3dbb2083693c&noteKey=2e87d16e54db6d4b&sn=https%3A%2F%2Fwww.evernote.com%2Fshard%2Fs202%2Fsh%2F070f6281-ef94-47c1-a4df-3dbb2083693c%2F2e87d16e54db6d4b&title=RNAseq%2Bpipeline%2B%2528SLURM%2Bsystem%2B2020%2529))
 
@@ -78,7 +72,7 @@ sbatch array_mapping_script.sh
 
 4. In `array_mapping_script.sh` change the array number: `#SBATCH --array=1-n`, `n` = number of lines in `file.list`
 
-## TODO (WIP)
+## TODO (WIP, not in the order of priority)
 
 1. scale up for different species
 
