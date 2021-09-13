@@ -8,18 +8,16 @@ names = []
 # list of file names after cleaning
 names_cleaned = []
 
-def store_paths(path):
+def store_names(path):
     """
-    Extracts and stores paths of fastq files into an array
+    Extracts and stores names of fastq files into an array
 
     @param path: the base directory path
     """
-    with os.scandir(path) as fastq:
-        for element in fastq:
-            if element.is_file() and element.name.endswith("fastq"):
-                names.append(element.name)
-            if element.is_dir():
-                store_paths(element.path)
+    for root, dirs, files in os.walk(path, topdown = True):
+        for element in files:
+            if element.endswith("fastq"):
+                names.append(element)
 
 def clean_list():
     """
@@ -42,7 +40,7 @@ def write_list():
             list.write(name)
             list.write("\n")
         
-store_paths("./fastq")
+store_names("./fastq")
 clean_list()
 # removes duplicates
 names_cleaned = list(set(names_cleaned))
