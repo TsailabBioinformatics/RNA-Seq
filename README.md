@@ -2,7 +2,36 @@
 
 Tsai lab RNA-Seq script
 
-## demo using Eucalyptus data: instructions on sapelo2
+## Description
+
+Prepare a sample table with the schema like `rnaseq_pollen_sample_table.csv`, this script will then run the RNA-Seq pipeline on the samples from different species in the table.
+
+![workflow](images/workflow.png)
+
+It will create folder structure like:
+
+```
+{species_id}
+    fastq (raw fastq files)
+    reference (genome reference from Phytozome or other sources)
+        species_genome.fasta -> genome.fa
+        species_annotation.gff3 -> gene.gtf
+    clean (filtered reads)
+    mapping (alignment maps)
+    count (quantification results for further analysis)
+    misc (other intermediate files)
+        *.txt
+        log....
+```
+
+## in-house resources
+
+the pollen fastq files’ path: `strawberry:~/ChenHsieh/pollen_rnaseq`
+
+the complete Phytozome zipped file: `/home/tsailab1/chenhsieh/pep/Phytozome_download.zip`
+
+
+## Demo of single species pipeline using Eucalyptus data: instructions on sapelo2
 
 1. clone this repo
 
