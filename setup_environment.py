@@ -46,7 +46,7 @@ def make_directories():
         print(f"creating directory {id}")
         os.mkdir(root_directory + id)
         for dir in sub_directories:
-            print(f"creating {root_directory + id + "/" + dir}")
+            print(f"creating {root_directory + id + '/' + dir}")
             os.mkdir(root_directory + id + "/" + dir + "/")
     # we can skip this part for now
     # for i in range(len(table)):
@@ -64,18 +64,16 @@ def extract_data():
     print("extracting data")
     # copy genome reference, fasta and gff3 respectively
     for i in range(len(table)):
-        print(f"copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,
-                                                                       "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"}")
+        print(f'copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"}')
         shutil.copyfile(table.at[i, "genome_fa"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa")
     for i in range(len(table)):
-        print(f"copying {table.at[i, "gene_gff"]} to {"./data/" + table.at[i,
-                                                                       "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}")
+        print(f'copying {table.at[i, "gene_gff"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}')
         shutil.copyfile(table.at[i, "gene_gff3"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3")
     # copy fastq files
     for i in range(len(table)):
-        print(f"copying {table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq"}")
+        print(f'copying {table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq"}')
         shutil.copyfile(table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq",
                         "./data/" + table.at[i, "folder_id"] + "/fastq/" + table.at[i, "sample_name"] + ".R1.fastq")
         shutil.copyfile(table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R2.fastq",
