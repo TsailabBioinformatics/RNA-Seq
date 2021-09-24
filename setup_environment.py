@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 import subprocess
 
+
+# TODO - create directories for user, if they don't exist
 root_directory = "./data/"
 sub_directories = ["species", "clean", "count",
                    "fastq", "mapping", "miscelaneous", "reference"]
@@ -32,15 +34,18 @@ def make_directories():
 
     @param species_name: the species to sequence
     """
+    # TODO - table["species"] can be used to write readme files for human to read in each directory
     species = table["species"]
 
+    # TODO - skip if directory already exists
     for id in directory_ids:
         os.mkdir(root_directory + id)
         for dir in sub_directories:
             os.mkdir(root_directory + id + "/" + dir + "/")
-    for i in range(len(table)):
-        os.mkdir(root_directory +
-                 table.at[i, "folder_id"] + "/species/" + table.at[i, "sample_name"])
+    # we can skip this part for now
+    # for i in range(len(table)):
+    #     os.mkdir(root_directory +
+    #              table.at[i, "folder_id"] + "/species/" + table.at[i, "sample_name"])
 
 
 def extract_data():
@@ -53,13 +58,18 @@ def extract_data():
 
     # copy genome reference, fasta and gff3 respectively
     for i in range(len(table)):
+        print(f"copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,
+                                                                       "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"}")
         shutil.copyfile(table.at[i, "genome_fa"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa")
     for i in range(len(table)):
+        print(f"copying {table.at[i, "gene_gff"]} to {"./data/" + table.at[i,
+                                                                       "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}")
         shutil.copyfile(table.at[i, "gene_gff3"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3")
     # copy fastq files
     for i in range(len(table)):
+        print(f"copying {table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq"}")
         shutil.copyfile(table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq",
                         "./data/" + table.at[i, "folder_id"] + "/fastq/" + table.at[i, "sample_name"] + ".R1.fastq")
         shutil.copyfile(table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R2.fastq",
@@ -68,6 +78,7 @@ def extract_data():
 
 def generate_scripts():
     # TODO - handle emails
+    # chen's note, I add a column in the table called "myID" to handle this, so that different jobs can even be sent to different users ,if necessary
     
 
     for element in directory_ids:
@@ -113,7 +124,7 @@ def generate_scripts():
             """
             # writing header
             mapping_script.write(f"""#!/bin/sh
-#SBATCH -J array_mapping_{element}
+#SBATCH -J {element}_array_mapping
 #SBATCH --partition batch
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=12
@@ -287,6 +298,7 @@ def submit_scripts():
     print(output)
     print(error)
 
+# TODO - print out progress
 make_directories()
 extract_data()
 generate_scripts()
