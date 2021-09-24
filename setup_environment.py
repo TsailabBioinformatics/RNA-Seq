@@ -34,6 +34,8 @@ def make_directories():
 
     @param species_name: the species to sequence
     """
+
+    print("creating directories")
     # TODO - table["species"] can be used to write readme files for human to read in each directory
     species = table["species"]
 
@@ -41,8 +43,10 @@ def make_directories():
     os.mkdir("data")
     # TODO - skip if directory already exists
     for id in directory_ids:
+        print(f"creating directory {id}")
         os.mkdir(root_directory + id)
         for dir in sub_directories:
+            print(f"creating {root_directory + id + "/" + dir}")
             os.mkdir(root_directory + id + "/" + dir + "/")
     # we can skip this part for now
     # for i in range(len(table)):
@@ -57,7 +61,7 @@ def extract_data():
 
     @param species_name: the species to sequence
     """
-
+    print("extracting data")
     # copy genome reference, fasta and gff3 respectively
     for i in range(len(table)):
         print(f"copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,
@@ -82,7 +86,7 @@ def generate_scripts():
     # TODO - handle emails
     # chen's note, I add a column in the table called "myID" to handle this, so that different jobs can even be sent to different users ,if necessary
     
-
+    print("generating scripts")
     for element in directory_ids:
         """
         makes a script to prepare for array mapping
@@ -292,6 +296,7 @@ def submit_scripts():
     """
     Submit all scripts to the cluster
     """
+    print("Submitting scripts to the cluster")
     with open(f"submit_all_scripts.sh", "w") as submit_script:
         submit_script.write("\n".join(start_sh_list))
     bashCommand  = f"bash ./submit_all_scripts.sh"
