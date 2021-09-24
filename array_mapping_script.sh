@@ -25,9 +25,8 @@ array_configure_file=file.list
 sampleFile=`head -n $SLURM_ARRAY_TASK_ID ${array_configure_file} | tail -n1`
 trimmo_path=/apps/eb/Trimmomatic/0.39-Java-11
 rRNA_ref_path=/work/cjtlab/Database/rRNA_ref
-
-
 genomefolder=${masterfolder}
+
 ### This is the clean and trim section ###
 cd ${cleanfolder}
 ml Trimmomatic
@@ -36,7 +35,6 @@ ${readsfolder}/${sampleFile}.R1.fastq ${readsfolder}/${sampleFile}.R2.fastq \
 ${sampleFile}_trimP_1.fq.gz ${sampleFile}_trimS_1.fq.gz ${sampleFile}_trimP_2.fq.gz ${sampleFile}_trimS_2.fq.gz \
 ILLUMINACLIP:${trimmo_path}/adapters/TruSeq3-PE.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 TOPHRED33 &>${sampleFile}_trim.log
 
-# TODO investigate how important this part is
 module load STAR
 STAR --runThreadN $SLURM_NTASKS_PER_NODE --genomeDir ${rRNA_ref_path} \
 --readFilesIn ${sampleFile}_trimP_1.fq.gz ${sampleFile}_trimP_2.fq.gz \
