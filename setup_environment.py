@@ -37,6 +37,8 @@ def make_directories():
     # TODO - table["species"] can be used to write readme files for human to read in each directory
     species = table["species"]
 
+
+    os.mkdir("data")
     # TODO - skip if directory already exists
     for id in directory_ids:
         os.mkdir(root_directory + id)
