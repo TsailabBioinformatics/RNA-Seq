@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 
+# TODO - add resume option, so that no need to re-run the entire process, especially the copy part
 
 # TODO - create directories for user, if they don't exist
 root_directory = "./data/"
@@ -68,7 +69,7 @@ def extract_data():
         shutil.copyfile(table.at[i, "genome_fa"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa")
     for i in range(len(table)):
-        print(f'copying {table.at[i, "gene_gff"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}')
+        print(f'copying {table.at[i, "gene_gff3"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}')
         shutil.copyfile(table.at[i, "gene_gff3"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3")
     # copy fastq files
@@ -89,7 +90,8 @@ def generate_scripts():
         """
         makes a script to prepare for array mapping
         """
-        start_sh_list.append("./data/" + element + "/start.sh")
+        element = element.strip()
+        start_sh_list.append("sbatch ./data/" + element + "/start.sh")
         with open("./data/" + element + "/start.sh", "wt") as script:
             script.write("#!/bin/sh\n")
             script.write("#SBATCH -J " + element + "_script\n")
