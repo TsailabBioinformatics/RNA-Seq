@@ -284,8 +284,7 @@ featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \\
 -o ${{sampleFile}}_counts.txt ${{mapfolder}}/${{sampleFile}}_Aligned.sortedByCoord.out.bam
 
 ## get trim log
-python ~/script/get_trim_sum.py ${{masterfolder}}/clean/
-##Please notice you need to get the get_trim_sum.py from NGSclean github
+python ./helper_scripts/get_trim_sum.py ${{masterfolder}}/clean/
 ## Get map log
 grep "" ${{masterfolder}}/map/*Log.final.out > ${{masterfolder}}/all_mapping_logs.txt
             
