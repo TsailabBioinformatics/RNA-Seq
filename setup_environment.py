@@ -177,7 +177,7 @@ ILLUMINACLIP:${{trimmo_path}}/adapters/TruSeq3-PE.fa:2:30:10 LEADING:5 TRAILING:
 """)
 
 # rRNA removal part
-            mapping_script.write("""
+            mapping_script.write('''
 STAR --runThreadN $SLURM_NTASKS_PER_NODE --genomeDir ${rRNA_ref_path} \
 --readFilesIn ${sampleFile}_trimP_1.fq.gz ${sampleFile}_trimP_2.fq.gz \
 --readFilesCommand gunzip -c --outReadsUnmapped Fastx \
@@ -219,16 +219,16 @@ printf "NPT : " >>${sampleFile}_Final.log.txt
 grep "MARKER" ${sampleFile}_STAR_Aligned.out.sam |grep -v "^@"|grep  "MARKER_NPT"|cut -f 1|sort|uniq|wc -l>>${sampleFile}_Final.log.txt
 printf "IRP : " >>${sampleFile}_Final.log.txt
 grep "MARKER" ${sampleFile}_STAR_Aligned.out.sam |grep -v "^@"|grep  "MARKER_IRP"|cut -f 1|sort|uniq|wc -l>>${sampleFile}_Final.log.txt
-sed '1~4 s|\s.\+$|/1|g' < ${sampleFile}_STAR_Unmapped.out.mate1 | paste - - - - |  sort -k1,1 -S 10G -T ./ -V | tr '\t' '\n' >${sampleFile}_clean_1.fq
-sed '1~4 s|\s.\+$|/2|g' < ${sampleFile}_STAR_Unmapped.out.mate2 | paste - - - - |  sort -k1,1 -S 10G -T ./ -V | tr '\t' '\n' >${sampleFile}_clean_2.fq
+sed '1~4 s|\s.\+$|/1|g' < ${sampleFile}_STAR_Unmapped.out.mate1 | paste - - - - |  sort -k1,1 -S 10G -T ./ -V | tr '\\t' '\\n' >${sampleFile}_clean_1.fq
+sed '1~4 s|\s.\+$|/2|g' < ${sampleFile}_STAR_Unmapped.out.mate2 | paste - - - - |  sort -k1,1 -S 10G -T ./ -V | tr '\\t' '\\n' >${sampleFile}_clean_2.fq
 sed -i '1~4 s|$|/1|g' ${sampleFile}_STAR_S1_Unmapped.out.mate1
 sed -i '1~4 s|$|/1|g' ${sampleFile}_STAR_S2_Unmapped.out.mate1
 mv ${sampleFile}_STAR_S1_Unmapped.out.mate1 ${sampleFile}_clean_S1.fq
 sed '1~4 s|/1$|/2|g' < ${sampleFile}_STAR_S2_Unmapped.out.mate1  >${sampleFile}_clean_S2.fq
 sed '1~4 s|/1$|/2|g' < ${sampleFile}_clean_S1.fq |  \
-awk 'NR%4==1{print}NR%4==2{printf  "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\n"}NR%4==3{print}NR%4==0{printf  "##############################\n"} '  > ${sampleFile}_clean_E2.fq
+awk 'NR%4==1{print}NR%4==2{printf  "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\\n"}NR%4==3{print}NR%4==0{printf  "##############################\\n"} '  > ${sampleFile}_clean_E2.fq
 cat ${sampleFile}_STAR_S2_Unmapped.out.mate1 |  \
-awk 'NR%4==1{print}NR%4==2{printf  "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\n"}NR%4==3{print}NR%4==0{printf  "##############################\n"} '  > ${sampleFile}_clean_E1.fq
+awk 'NR%4==1{print}NR%4==2{printf  "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\\n"}NR%4==3{print}NR%4==0{printf  "##############################\\n"} '  > ${sampleFile}_clean_E1.fq
 cat ${sampleFile}_clean_S1.fq >> ${sampleFile}_clean_1.fq
 cat ${sampleFile}_clean_E2.fq >> ${sampleFile}_clean_2.fq
 cat ${sampleFile}_clean_E1.fq >> ${sampleFile}_clean_1.fq
@@ -262,7 +262,7 @@ rm ${sampleFile}_trimS_2.fq.gz
 rm ${sampleFile}_trim.log
 gzip -f ${sampleFile}_clean_1.fq
 gzip -f ${sampleFile}_clean_2.fq
-""")
+''')
 
             mapping_script.write(f"""
 ### Mapping with STAR ###
@@ -286,6 +286,7 @@ featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \
 -o ${{sampleFile}}_counts.txt ${{mapfolder}}/${{sampleFile}}_Aligned.sortedByCoord.out.bam
 
 ## get trim log
+# TODO - integrate get_trim_sum.py
 python ./helper_scripts/get_trim_sum.py ${{masterfolder}}/clean/
 ## Get map log
 grep "" ${{masterfolder}}/map/*Log.final.out > ${{masterfolder}}/all_mapping_logs.txt
