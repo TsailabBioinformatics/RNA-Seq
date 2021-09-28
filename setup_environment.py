@@ -106,7 +106,7 @@ def generate_scripts():
             script.write(f"#SBATCH --mail-user={myID}@uga.edu\n")
             script.write("#SBATCH --mail-type=BEGIN,END,FAIL\n")
             script.write("date\n\n")
-            script.write("cd $SLURM_SUBMIT_DIR")
+            script.write("cd $SLURM_SUBMIT_DIR\n")
             script.write("module load gffread\n")
             script.write("gffread reference/" + element +
                          ".gff3 -T -o reference/" + element + "_gene.gtf\n")
@@ -163,7 +163,7 @@ rRNA_ref_path=/work/cjtlab/Database/rRNA_ref
 ### module load ###
 # TODO - do we want to add version here?
 module load STAR
-module load trimmomatic
+module load Trimmomatic
 module load Subread
 """)
 
@@ -304,8 +304,8 @@ def submit_scripts():
     bashCommand  = f"bash ./submit_all_scripts.sh"
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
-    print(output)
-    print(error)
+    print(f"subprocess output: {output}")
+    print(f"subprocess error: {error}")
 
 # TODO - print out progress
 make_directories()
