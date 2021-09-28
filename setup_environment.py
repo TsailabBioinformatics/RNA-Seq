@@ -110,14 +110,14 @@ def generate_scripts():
             script.write("gffread reference/" + element +
                          ".gff3 -T -o reference/" + element + "_gene.gtf\n")
             script.write("ml STAR\n")
-            script.write("STAR \ \n")
-            script.write("--runThreadN $SLURM_NTASKS_PER_NODE \ \n")
-            script.write("--runMode genomeGenerate \ \n")
-            script.write("--genomeSAindexNbases 13 \ \n")
-            script.write("--genomeDir ./reference \ \n")
-            script.write(f"--genomeFastaFiles ./reference/{element}_genome.fa \ \n")
-            script.write(f"--sjdbGTFfile ./reference/{element}_gene.gtf \n")
-            script.write("sbatch map.sh\n")
+            script.write(f"""STAR \
+--runThreadN $SLURM_NTASKS_PER_NODE \
+--runMode genomeGenerate \
+--genomeSAindexNbases 13 \
+--genomeDir ./reference \
+--genomeFastaFiles ./reference/{element}_genome.fa \
+--sjdbGTFfile ./reference/{element}_gene.gtf
+sbatch map.sh""")
 
         # handle array size and generate file.list
         sample_list = table[table["folder_id"]
