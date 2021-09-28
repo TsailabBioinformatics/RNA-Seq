@@ -1,6 +1,8 @@
 """
-This program creates a directory structure to
-store and organize different species' genome data
+This program sets up an environment to
+store and organize different species' genome data.
+It also generates bash scrips for each of the species 
+and subprocceses them. 
 """
 import os
 import shutil
@@ -11,7 +13,6 @@ import subprocess
 # TODO - add resume option, so that no need to re-run the entire process, especially the copy part
 
 # TODO - create directories for user, if they don't exist
-root_directory = "./data/"
 sub_directories = ["species", "clean", "count",
                    "fastq", "mapping", "miscelaneous", "reference"]
 
@@ -19,15 +20,6 @@ table = pd.read_csv("./input/sample_table.csv")
 directory_ids = list(set(table["folder_id"].to_numpy()))
 myID = table["myID"][0]
 start_sh_list = []
-
-
-def clean_csv_data():
-    '''
-    takes in a csv and cleans whitespace 
-    '''
-    # TODO
-    # chen's note: already dealt with .strip() when taking the value
-    pass
 
 
 def make_directories():
@@ -40,16 +32,18 @@ def make_directories():
     print("### creating directories ###")
     # TODO - table["species"] can be used to write readme files for human to read in each directory
     species = table["species"]
-
-
-    os.mkdir("data")
-    # TODO - skip if directory already exists
+    root_dir = "./data/"
+    
+    if not (os.path.isdir(root_dir)):
+        os.mkdir(root_dir)
     for id in directory_ids:
-        print(f"creating directory {id}")
-        os.mkdir(root_directory + id)
+        if not (os.path.isdir(root_dir + id)):
+            print(f"creating directory" + id)        
+            os.mkdir(root_dir + id)
         for dir in sub_directories:
-            print(f"creating {root_directory + id + '/' + dir}")
-            os.mkdir(root_directory + id + "/" + dir + "/")
+            if not (os.path.isdir(root_dir + id + '/' +  dir)):
+                print(f"creating {root_dir + id + '/' + dir}")
+                os.mkdir(root_dir + id + "/" + dir + "/")
     # we can skip this part for now
     # for i in range(len(table)):
     #     os.mkdir(root_directory +
@@ -65,13 +59,14 @@ def extract_data():
     """
     print("### extracting data ###")
     # copy genome reference, fasta and gff3 respectively
-    # TODO - fix redundant copying of genome_fa and gene_gff3
     for i in range(len(table)):
-        print(f'copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"}')
-        shutil.copyfile(table.at[i, "genome_fa"], "./data/" + table.at[i,
+        if not os.path.isfile("./data/" + table.at[i, "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"):
+            print(f'copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"}')
+            shutil.copyfile(table.at[i, "genome_fa"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa")
-        print(f'copying {table.at[i, "gene_gff3"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}')
-        shutil.copyfile(table.at[i, "gene_gff3"], "./data/" + table.at[i,
+        if not os.path.isfile("./data/" + table.at[i, "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"):
+            print(f'copying {table.at[i, "gene_gff3"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}')
+            shutil.copyfile(table.at[i, "gene_gff3"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3")
     # copy fastq files
         print(f'copying {table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq"}')
@@ -82,9 +77,6 @@ def extract_data():
 
 
 def generate_scripts():
-    # TODO - handle emails
-    # chen's note, I add a column in the table called "myID" to handle this, so that different jobs can even be sent to different users ,if necessary
-    
     print("### generating scripts ###")
     for element in directory_ids:
         """
