@@ -111,12 +111,12 @@ def generate_scripts():
                          ".gff3 -T -o reference/" + element + "_gene.gtf\n")
             script.write("ml STAR\n")
             script.write("STAR \\ \n")
-            script.write("--runThreadN 8 \\ \n")
+            script.write("--runThreadN 12 \\ \n")
             script.write("--runMode genomeGenerate \\ \n")
             script.write("--genomeSAindexNbases 13 \\ \n")
-            script.write("--genomeDir . \\ \n")
-            script.write("--genomeFastaFiles " + element + "_genome.fa \\ \n")
-            script.write("--sjdbGTFfile reference/" + element + "_gene.gtf \n")
+            script.write("--genomeDir ./reference \\ \n")
+            script.write(f"--genomeFastaFiles ./reference/{element}_genome.fa \\ \n")
+            script.write(f"--sjdbGTFfile ./reference/{element}_gene.gtf \n")
             script.write("sbatch map.sh\n")
 
         # handle array size and generate file.list
@@ -167,7 +167,7 @@ module load Subread
 """)
 
 # clean and trim reads
-            mapping_script.write("""
+            mapping_script.write(f"""
 ### This is the clean and trim section ###
 cd ${{cleanfolder}}
 java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -threads $SLURM_NTASKS_PER_NODE -phred33 \\ 
