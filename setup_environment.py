@@ -26,6 +26,7 @@ def clean_csv_data():
     takes in a csv and cleans whitespace 
     '''
     # TODO
+    # chen's note: already dealt with .strip() when taking the value
     pass
 
 
@@ -91,7 +92,9 @@ def generate_scripts():
         makes a script to prepare for array mapping
         """
         element = element.strip()
-        start_sh_list.append("sbatch ./data/" + element + "/start.sh")
+        start_sh_list.append(f"cd ./data/{element}")
+        start_sh_list.append(f"sbatch start.sh")
+        start_sh_list.append("cd ../..")
         with open("./data/" + element + "/start.sh", "wt") as script:
             script.write("#!/bin/sh\n")
             script.write("#SBATCH -J " + element + "_script\n")
@@ -103,7 +106,7 @@ def generate_scripts():
             script.write(f"#SBATCH --mail-user={myID}@uga.edu\n")
             script.write("#SBATCH --mail-type=BEGIN,END,FAIL\n")
             script.write("date\n\n")
-
+            script.write("cd $SLURM_SUBMIT_DIR")
             script.write("module load gffread\n")
             script.write("gffread reference/" + element +
                          ".gff3 -T -o reference/" + element + "_gene.gtf\n")
@@ -115,7 +118,7 @@ def generate_scripts():
             script.write("--genomeDir . \\ \n")
             script.write("--genomeFastaFiles " + element + "_genome.fa \\ \n")
             script.write("--sjdbGTFfile reference/" + element + "_gene.gtf \n")
-            script.write("sbatch " + "./data/" + element + "/map.sh\n")
+            script.write("sbatch map.sh\n")
 
         # handle array size and generate file.list
         sample_list = table[table["folder_id"]
