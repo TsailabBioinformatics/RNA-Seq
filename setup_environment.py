@@ -110,12 +110,12 @@ def generate_scripts():
             script.write("gffread reference/" + element +
                          ".gff3 -T -o reference/" + element + "_gene.gtf\n")
             script.write("ml STAR\n")
-            script.write("STAR \\ \n")
-            script.write("--runThreadN 12 \\ \n")
-            script.write("--runMode genomeGenerate \\ \n")
-            script.write("--genomeSAindexNbases 13 \\ \n")
-            script.write("--genomeDir ./reference \\ \n")
-            script.write(f"--genomeFastaFiles ./reference/{element}_genome.fa \\ \n")
+            script.write("STAR \ \n")
+            script.write("--runThreadN $SLURM_NTASKS_PER_NODE \ \n")
+            script.write("--runMode genomeGenerate \ \n")
+            script.write("--genomeSAindexNbases 13 \ \n")
+            script.write("--genomeDir ./reference \ \n")
+            script.write(f"--genomeFastaFiles ./reference/{element}_genome.fa \ \n")
             script.write(f"--sjdbGTFfile ./reference/{element}_gene.gtf \n")
             script.write("sbatch map.sh\n")
 
@@ -170,9 +170,9 @@ module load Subread
             mapping_script.write(f"""
 ### This is the clean and trim section ###
 cd ${{cleanfolder}}
-java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -threads $SLURM_NTASKS_PER_NODE -phred33 \\ 
-${{readsfolder}}/${{sampleFile}}.R1.fastq ${{readsfolder}}/${{sampleFile}}.R2.fastq \\
-${{sampleFile}}_trimP_1.fq.gz ${{sampleFile}}_trimS_1.fq.gz ${{sampleFile}}_trimP_2.fq.gz ${{sampleFile}}_trimS_2.fq.gz \\ 
+java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -threads $SLURM_NTASKS_PER_NODE -phred33 \
+${{readsfolder}}/${{sampleFile}}.R1.fastq ${{readsfolder}}/${{sampleFile}}.R2.fastq \
+${{sampleFile}}_trimP_1.fq.gz ${{sampleFile}}_trimS_1.fq.gz ${{sampleFile}}_trimP_2.fq.gz ${{sampleFile}}_trimS_2.fq.gz \
 ILLUMINACLIP:${{trimmo_path}}/adapters/TruSeq3-PE.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 TOPHRED33 &>${{sampleFile}}_trim.log
 """)
 
@@ -271,18 +271,18 @@ cd ${{mapfolder}}
 ### STAR mapping ###
 STAR --runThreadN $SLURM_NTASKS_PER_NODE \
 --genomeDir ${{genomefolder}} --readFilesIn \
-${{cleanfolder}}/${{sampleFile}}_clean_1.fq.gz ${{cleanfolder}}/${{sampleFile}}_clean_2.fq.gz --readFilesCommand gunzip -c \\
---outSAMtype BAM SortedByCoordinate \\
---outFileNamePrefix ${{sampleFile}}_ \\
---alignMatesGapMax 20000 \\
---alignIntronMax 10000 \\
---outFilterScoreMinOverLread 0.1 \\
+${{cleanfolder}}/${{sampleFile}}_clean_1.fq.gz ${{cleanfolder}}/${{sampleFile}}_clean_2.fq.gz --readFilesCommand gunzip -c \
+--outSAMtype BAM SortedByCoordinate \
+--outFileNamePrefix ${{sampleFile}}_ \
+--alignMatesGapMax 20000 \
+--alignIntronMax 10000 \
+--outFilterScoreMinOverLread 0.1 \
 --outFilterMatchNminOverLread 0.1
 
 ### Count by Subread ###
 cd ${{countfolder}}
-featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \\
--a ${{genomefolder}}{element}_gene.gtf \\
+featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \
+-a ${{genomefolder}}{element}_gene.gtf \
 -o ${{sampleFile}}_counts.txt ${{mapfolder}}/${{sampleFile}}_Aligned.sortedByCoord.out.bam
 
 ## get trim log
