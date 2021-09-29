@@ -38,7 +38,7 @@ def make_directories():
         os.mkdir(root_dir)
     for id in directory_ids:
         if not (os.path.isdir(root_dir + id)):
-            print(f"creating directory" + id)        
+            print(f"creating directory " + id)        
             os.mkdir(root_dir + id)
         for dir in sub_directories:
             if not (os.path.isdir(root_dir + id + '/' +  dir)):
@@ -50,7 +50,7 @@ def make_directories():
     #              table.at[i, "folder_id"] + "/species/" + table.at[i, "sample_name"])
 
 
-def extract_data():
+def transfer_data():
     """
     As of now, extracts data from Phytozome and
     moves it to specific species directory
@@ -64,18 +64,24 @@ def extract_data():
             print(f'copying {table.at[i, "genome_fa"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa"}')
             shutil.copyfile(table.at[i, "genome_fa"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + "_genome.fa")
+        # copy gff3
         if not os.path.isfile("./data/" + table.at[i, "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"):
             print(f'copying {table.at[i, "gene_gff3"]} to {"./data/" + table.at[i,"folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3"}')
             shutil.copyfile(table.at[i, "gene_gff3"], "./data/" + table.at[i,
                                                                        "folder_id"] + "/reference/" + table.at[i, "folder_id"] + ".gff3")
-    # copy fastq files
+        # copy fastq files
         print(f'copying {table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq"}')
         shutil.copyfile(table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R1.fastq",
                         "./data/" + table.at[i, "folder_id"] + "/fastq/" + table.at[i, "sample_name"] + ".R1.fastq")
         shutil.copyfile(table.at[i, "fastq_dir"] + table.at[i, "sample_name"] + ".R2.fastq",
                         "./data/" + table.at[i, "folder_id"] + "/fastq/" + table.at[i, "sample_name"] + ".R2.fastq")
-
-
+        
+        # copy get_trim_counts
+        if not os.path.isfile("./data/" + table.at[i, "folder_id"] + "get_trim_sum.py"):
+            print(f'copying get_trim_sum.py to ./data/{table.at[i, "folder_id"]}')
+            shutil.copyfile("./helper_scripts/get_trim_sum.py", "./data/" + table.at[i, "folder_id"] + "/get_trim_sum.py")
+              
+    
 def generate_scripts():
     print("### generating scripts ###")
     for element in directory_ids:
@@ -279,7 +285,9 @@ featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \
 
 ## get trim log
 # TODO - integrate get_trim_sum.py
-python ./helper_scripts/get_trim_sum.py ${{masterfolder}}/clean/
+cd ..
+pwd
+python get_trim_sum.py ./clean/
 ## Get map log
 grep "" ${{masterfolder}}/map/*Log.final.out > ${{masterfolder}}/all_mapping_logs.txt
             
@@ -301,6 +309,6 @@ def submit_scripts():
 
 # TODO - print out progress
 make_directories()
-extract_data()
+transfer_data()
 generate_scripts()
 submit_scripts()
