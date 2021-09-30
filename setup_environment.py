@@ -14,7 +14,7 @@ import subprocess
 
 # TODO - create directories for user, if they don't exist
 sub_directories = ["species", "clean", "count",
-                   "fastq", "mapping", "miscelaneous", "reference"]
+                   "fastq", "map", "miscelaneous", "reference"]
 
 table = pd.read_csv("./input/sample_table.csv")
 directory_ids = list(set(table["folder_id"].to_numpy()))
@@ -280,13 +280,11 @@ ${{cleanfolder}}/${{sampleFile}}_clean_1.fq.gz ${{cleanfolder}}/${{sampleFile}}_
 ### Count by Subread ###
 cd ${{countfolder}}
 featureCounts -Q 2 -s 0 -T $SLURM_NTASKS_PER_NODE -p -C \
--a ${{genomefolder}}{element}_gene.gtf \
+-a ${{genomefolder}}/{element}_gene.gtf \
 -o ${{sampleFile}}_counts.txt ${{mapfolder}}/${{sampleFile}}_Aligned.sortedByCoord.out.bam
 
 ## get trim log
-# TODO - integrate get_trim_sum.py
 cd ..
-pwd
 python get_trim_sum.py ./clean/
 ## Get map log
 grep "" ${{masterfolder}}/map/*Log.final.out > ${{masterfolder}}/all_mapping_logs.txt
