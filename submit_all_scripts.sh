@@ -1,0 +1,9 @@
+cd ./data/potri
+sbatch start.sh
+cd ../..
+cd ./data/podel
+sbatch start.sh
+cd ../..
+cd ./data/eugra
+sbatch start.sh
+cd ../..
