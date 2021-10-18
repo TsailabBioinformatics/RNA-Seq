@@ -43,7 +43,7 @@ git clone https://github.com/TsailabBioinformatics/RNA-Seq.git;cp RNA-Seq/* .
 - if cloning returned `fatal: Authentication failed`, then try again using a github personal access token. instructions to do so can be found here: <https://docs.github.com/en/enterprise-server@3.1/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>
 2. create an input csv file (like `sample_table.csv`), name it `input.csv`, and add it to `RNA-Seq/input/`
 - check to make sure `input.csv` exists within the folder `RNA-Seq/input`
-3. change directories into `RNA-Seq`
+4. change directories into `RNA-Seq`
 5. load modules `python-utils` and `pandas` with commands:
 ```bash
 ml python-utils
@@ -55,3 +55,8 @@ ml pandas
 ```python3
 python3 pipeline.py
 ```
+8. browse specific species' data by changing directories into a species folder:
+```bash
+cd data/{species_id}
+```
+TODO - implement visualization --> add instructions to run visualization
